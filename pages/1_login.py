@@ -147,10 +147,9 @@ def main():
         }
         """
     ):
-        # Header with logo
+        #Header with logo
         st.markdown(f"""
         <div style="text-align: center; margin-bottom: 1.5rem;">
-            <img src="{LOGO}" width="80" style="vertical-align: middle; margin-right: 10px;">
             <h1 style="display: inline-block; vertical-align: middle; color: #2563eb;">
                 EduFlow Login
             </h1>
@@ -164,7 +163,7 @@ def main():
             <div style="text-align: center; margin: 2rem 0;">
                 <a href="{auth_url}" target="_blank">
                     <button class="google-btn">
-                        <img src="https://www.gstatic.com/images/branding/product/1x/google_48dp.png" 
+                        <img src="{LOGO}" 
                              width="20" style="vertical-align: middle; margin-right: 10px;">
                         Continue with Google
                     </button>
