@@ -8,11 +8,14 @@ from streamlit_lottie import st_lottie
 import json
 from streamlit_extras.stylable_container import stylable_container
 
-# ===== YOUR BACKEND CODE (UNCHANGED) =====
+# ===== BACKEND CODE =====
 CLIENT_SECRETS_FILE = "credentials.json"
-SCOPES = ['https://www.googleapis.com/auth/classroom.courses.readonly',
-          'https://www.googleapis.com/auth/userinfo.email', 'openid']
-TOKEN_FILE = "token.pickle"
+SCOPES = [
+    'https://www.googleapis.com/auth/classroom.courses.readonly',
+    'https://www.googleapis.com/auth/userinfo.email', 
+    'openid'
+]
+TOKEN_FILE = "token.json"
 
 def is_authenticated():
     if os.path.exists(TOKEN_FILE):
@@ -22,12 +25,20 @@ def is_authenticated():
     return False
 
 def authenticate():
-    flow = Flow.from_client_secrets_file(CLIENT_SECRETS_FILE, scopes=SCOPES, redirect_uri="urn:ietf:wg:oauth:2.0:oob")
+    flow = Flow.from_client_secrets_file(
+        CLIENT_SECRETS_FILE, 
+        scopes=SCOPES, 
+        redirect_uri="urn:ietf:wg:oauth:2.0:oob"
+    )
     auth_url, _ = flow.authorization_url(prompt="consent")
     return auth_url
 
 def fetch_token(auth_code):
-    flow = Flow.from_client_secrets_file(CLIENT_SECRETS_FILE, scopes=SCOPES, redirect_uri="urn:ietf:wg:oauth:2.0:oob")
+    flow = Flow.from_client_secrets_file(
+        CLIENT_SECRETS_FILE, 
+        scopes=SCOPES, 
+        redirect_uri="urn:ietf:wg:oauth:2.0:oob"
+    )
     flow.fetch_token(code=auth_code)
     return flow.credentials
 
@@ -36,10 +47,10 @@ def detect_user_role(creds):
         classroom = build("classroom", "v1", credentials=creds)
         results = classroom.courses().list(teacherId="me").execute()
         return "teacher" if results.get('courses') else "student"
-    except:
+    except Exception:
         return "student"
 
-# ===== MAGICAL UI ENHANCEMENTS =====
+# ===== UI ENHANCEMENTS =====
 def load_lottie(url):
     """Load Lottie animation from URL"""
     if url.startswith('http'):
@@ -92,8 +103,6 @@ ANIMATION = {
     }]
 }
 
-# Base64 encoded logo (your provided image)
-LOGO = "data:image/png;base64,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"
 # ===== STREAMLIT UI =====
 def main():
     # Page config
@@ -103,20 +112,20 @@ def main():
     )
 
     # Custom CSS
-    st.markdown(f"""
+    st.markdown("""
     <style>
-        .stApp {{
+        .stApp {
             background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-        }}
-        .login-card {{
+        }
+        .login-card {
             background: rgba(255,255,255,0.95);
             border-radius: 15px;
             padding: 2rem;
             box-shadow: 0 8px 32px rgba(0,0,0,0.1);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255,255,255,0.2);
-        }}
-        .google-btn {{
+        }
+        .google-btn {
             background: white !important;
             color: #5f6368 !important;
             border: 1px solid #dadce0 !important;
@@ -124,18 +133,24 @@ def main():
             padding: 10px 24px !important;
             font-weight: 500 !important;
             transition: all 0.3s !important;
-        }}
-        .google-btn:hover {{
+        }
+        .google-btn:hover {
             box-shadow: 0 2px 6px rgba(0,0,0,0.2) !important;
-        }}
+        }
+        .role-btn {
+            width: 100%;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            font-size: 1.1rem;
+        }
     </style>
     """, unsafe_allow_html=True)
 
-    # Animation at top (try online URL first, fallback to embedded)
+    # Animation at top
     try:
         st_lottie(load_lottie("https://assets1.lottiefiles.com/packages/lf20_ktwnwv5m.json"), 
                  height=200, key="login-anim")
-    except:
+    except Exception:
         st_lottie(ANIMATION, height=200, key="login-fallback")
 
     # Login card
@@ -147,8 +162,8 @@ def main():
         }
         """
     ):
-        #Header with logo
-        st.markdown(f"""
+        # Header
+        st.markdown("""
         <div style="text-align: center; margin-bottom: 1.5rem;">
             <h1 style="display: inline-block; vertical-align: middle; color: #2563eb;">
                 EduFlow Login
@@ -163,7 +178,7 @@ def main():
             <div style="text-align: center; margin: 2rem 0;">
                 <a href="{auth_url}" target="_blank">
                     <button class="google-btn">
-                        <img src="{LOGO}" 
+                        <img src="data:image/png;base64,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" 
                              width="20" style="vertical-align: middle; margin-right: 10px;">
                         Continue with Google
                     </button>
@@ -182,9 +197,12 @@ def main():
                 }
                 """
             ):
-                auth_code = st.text_input("Paste authorization code:", 
-                                         placeholder="Paste code from Google here...",
-                                         help="You'll get this after clicking the Google button")
+                auth_code = st.text_input(
+                    "Paste authorization code:", 
+                    placeholder="Paste code from Google here...",
+                    help="You'll get this after clicking the Google button",
+                    key="auth_code_input"
+                )
 
                 if auth_code:
                     with st.spinner("Authenticating..."):
@@ -204,8 +222,53 @@ def main():
             
             user_info = build("oauth2", "v2", credentials=creds).userinfo().get().execute()
             user_email = user_info["email"]
-            user_role = detect_user_role(creds)
             
+            # Check if user needs to select role
+            if 'user_role' not in st.session_state:
+                st.markdown(f"""
+                <div style="text-align: center; margin: 2rem 0;">
+                    <h2 style="color: #2563eb;">Welcome to EduFlow!</h2>
+                    <p style="color: #555;">{user_email}</p>
+                </div>
+                """, unsafe_allow_html=True)
+                
+                st.markdown("### Please select your role:")
+                
+                col1, col2 = st.columns(2)
+                with col1:
+                    if st.button(
+                        "🎓 I'm a Student", 
+                        use_container_width=True,
+                        key="student_role_select_btn",
+                        help="Select if you're here to learn"
+                    ):
+                        st.session_state.user_role = "student"
+                        st.rerun()
+                
+                with col2:
+                    if st.button(
+                        "👨‍🏫 I'm an Instructor", 
+                        use_container_width=True,
+                        key="instructor_role_select_btn",
+                        help="Select if you're here to teach"
+                    ):
+                        st.session_state.user_role = "instructor"
+                        st.rerun()
+                
+                # Animation for role selection
+                try:
+                    st_lottie(
+                        load_lottie("https://assets10.lottiefiles.com/packages/lf20_yo4yzvar.json"), 
+                        height=250, 
+                        key="role-select-anim"
+                    )
+                except Exception:
+                    pass
+                
+                st.stop()  # Don't proceed until role is selected
+            
+            # Show welcome message with role
+            user_role = st.session_state.user_role
             st.markdown(f"""
             <div style="text-align: center; margin: 2rem 0;">
                 <h2 style="color: #2563eb;">Welcome, {user_role.capitalize()}!</h2>
@@ -213,19 +276,62 @@ def main():
             </div>
             """, unsafe_allow_html=True)
             
-            # Another animation for dashboard transition
+            # Dashboard animation
             try:
-                st_lottie(load_lottie("https://assets1.lottiefiles.com/packages/lf20_2cwDXD.json"), 
-                         height=200, key="dashboard-anim")
-            except:
+                st_lottie(
+                    load_lottie("https://assets1.lottiefiles.com/packages/lf20_2cwDXD.json"), 
+                    height=200, 
+                    key="dashboard-anim"
+                )
+            except Exception:
                 pass
             
-            if st.button("Go to Dashboard", type="primary"):
-                st.switch_page("pages/dashboard.py")
+            # Action buttons - MODIFIED SECTION FOR VERTICAL ALIGNMENT
+            st.markdown("""
+            <style>
+                .stButton>button {
+                    height: 3rem;
+                    min-width: 100%;
+                }
+                .button-container {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 1rem;
+                    align-items: center;
+                }
+            </style>
+            """, unsafe_allow_html=True)
             
-            if st.button("Sign Out"):
-                os.remove(TOKEN_FILE)
-                st.rerun()
-
+            with stylable_container(
+                key="button_container",
+                css_styles="""
+                {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 1rem;
+                    align-items: center;
+                    width: 100%;
+                }
+                """
+            ):
+                if st.button(
+                    "Go to Dashboard", 
+                    type="primary",
+                    key="go_to_dashboard_btn",
+                    use_container_width=True
+                ):
+                    if user_role == "instructor":
+                        st.switch_page("pages/2_instructor.py")
+                    else:
+                        st.switch_page("pages/3_student.py")
+                
+                if st.button(
+                    "Sign Out",
+                    key="sign_out_btn",
+                    use_container_width=True
+                ):
+                    os.remove(TOKEN_FILE)
+                    st.session_state.clear()
+                    st.rerun()
 if __name__ == "__main__":
     main()
