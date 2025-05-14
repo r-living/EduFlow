@@ -1,6 +1,7 @@
 import streamlit as st
 from streamlit_extras.colored_header import colored_header
 from streamlit_extras.stylable_container import stylable_container
+import os
 
 # ===== PAGE SETUP =====
 st.set_page_config(
@@ -38,8 +39,6 @@ with stylable_container(
     </h3>
     """, unsafe_allow_html=True)
 
-
-
 # ===== HERO SECTION =====
 colored_header(
     label="",
@@ -75,6 +74,7 @@ with col1:
 
 with col2:
     st.image("hero_image.png", width=300)  # Replace with your image
+
 # ===== FEATURES SECTION =====
 st.header("🌟 Why Choose EduFlow?")
 features = st.columns(3)
@@ -82,7 +82,7 @@ features = st.columns(3)
 # Feature 1
 with features[0]:
     with stylable_container(
-        key="feature_card_1",  # Changed to unique key
+        key="feature_card_1",
         css_styles="""
         {
             background: rgba(255, 255, 255, 0.9);
@@ -99,7 +99,7 @@ with features[0]:
 # Feature 2
 with features[1]:
     with stylable_container(
-        key="feature_card_2",  # Changed to unique key
+        key="feature_card_2",
         css_styles="""
         {
             background: rgba(255, 255, 255, 0.9);
@@ -116,7 +116,7 @@ with features[1]:
 # Feature 3
 with features[2]:
     with stylable_container(
-        key="feature_card_3",  # Changed to unique key
+        key="feature_card_3",
         css_styles="""
         {
             background: rgba(255, 255, 255, 0.9);
@@ -129,6 +129,7 @@ with features[2]:
     ):
         st.subheader("👥 Community Support")
         st.markdown("Connect with peers and instructors in discussion forums")
+
 # ===== TESTIMONIALS =====
 st.header("💬 What Our Students Say")
 testimonials = st.columns(2)
@@ -136,7 +137,7 @@ testimonials = st.columns(2)
 # Testimonial 1
 with testimonials[0]:
     with stylable_container(
-        key="testimonial_card_1",  # Unique key
+        key="testimonial_card_1",
         css_styles="""
         {
             background: rgba(37, 99, 235, 0.1);
@@ -152,7 +153,7 @@ with testimonials[0]:
 # Testimonial 2
 with testimonials[1]:
     with stylable_container(
-        key="testimonial_card_2",  # Unique key
+        key="testimonial_card_2",
         css_styles="""
         {
             background: rgba(37, 99, 235, 0.1);
@@ -172,8 +173,8 @@ footer_cols = st.columns(3)
 with footer_cols[0]:
     st.markdown("**Quick Links**")
     st.markdown("[Home](#)")  # Link to current page
-    st.markdown("[Login](/login)")  # Link to login page
-    st.markdown("[Courses](/courses)")  # Link to courses page
+    st.markdown("[Login](pages/1_login.py)")  # Link to login page
+    st.markdown("[Courses](#)")  # Link to courses page
 
 with footer_cols[1]:
     st.markdown("**Contact Us**")
@@ -183,3 +184,7 @@ with footer_cols[1]:
 with footer_cols[2]:
     st.markdown("**Follow Us**")
     st.write("[Twitter](https://twitter.com) | [LinkedIn](https://linkedin.com)")
+
+if __name__ == "__main__":
+    # Removed the auto-redirect code
+    pass

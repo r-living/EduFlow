@@ -11,7 +11,7 @@ from streamlit_extras.stylable_container import stylable_container
 # ===== BACKEND CODE =====
 CLIENT_SECRETS_FILE = "credentials.json"
 SCOPES = [
-    'https://www.googleapis.com/auth/classroom.courses.readonly',
+    'https://www.googleapis.com/auth/classroom.courses',
     'https://www.googleapis.com/auth/userinfo.email', 
     'openid'
 ]
@@ -320,10 +320,12 @@ def main():
                     key="go_to_dashboard_btn",
                     use_container_width=True
                 ):
-                    if user_role == "instructor":
-                        st.switch_page("pages/2_instructor.py")
+                    if st.session_state.user_role == "instructor":
+                        target_page = os.path.join(os.path.dirname(__file__), "2_instructor.py")
                     else:
-                        st.switch_page("pages/3_student.py")
+                        target_page = os.path.join(os.path.dirname(__file__), "3_student.py")
+        
+                    st.switch_page(target_page)
                 
                 if st.button(
                     "Sign Out",
