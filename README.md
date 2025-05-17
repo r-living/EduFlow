@@ -1,2 +1,2 @@
-# moodling (not the final name lol)
+# EduFlow
 A Educational website for the *Software Engineering course*😊
