@@ -8,3 +8,5 @@ __pycache__/
 # Secrets
 credentials.json
 .envvenv/
+token.json
+token.json

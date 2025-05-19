@@ -79,16 +79,23 @@ def load_lottie(url):
     return json.loads(url)
 
 def course_card(course):
-    """Display a course as a styled card (simplified version)"""
+    """Display a course as a styled card (fixed version)"""
     with stylable_container(
         key=f"course_{course['id']}",
         css_styles="""
         {
-            background: white;
+            background: #e1eaed;
             border-radius: 10px;
-            padding: 1rem;
+            padding: 2rem;
             margin: 0.5rem 0;
             border: 1px solid #e0e0e0;
+            color: #93a7b5;
+        }
+        .stMarkdown {
+            margin-bottom: 0;
+        }
+        .st-caption {
+            color: rgba(255,255,255,0.8) !important;
         }
         """
     ):
@@ -96,14 +103,18 @@ def course_card(course):
         with col1:
             st.markdown(f"### {course.get('name', 'Untitled Course')}")
             st.caption(f"Section: {course.get('section', 'N/A')} • Room: {course.get('room', 'N/A')}")
-            if course.get('description'):
-                st.markdown(f"<div style='color: #555; font-size: 0.9rem;'>{course['description']}</div>", 
-                          unsafe_allow_html=True)
-        
+            
         with col2:
             st.markdown(f"**ID:** `{course['id']}`")
             if st.button("Manage", key=f"manage_{course['id']}"):
                 st.session_state.current_course = course
+        
+        # Description moved inside the main container with proper styling
+        if course.get('description'):
+            st.markdown(
+                f"<div style='color: #93a7b5; font-size: 0.9rem; margin-top: 0.5rem;'>{course['description']}</div>", 
+                unsafe_allow_html=True
+            )
 
 # ===== MAIN PAGE =====
 def main():
@@ -138,7 +149,7 @@ def main():
     st.markdown("""
     <style>
         .stApp {
-            background: #f5f7fa;
+            background: #93a7b5;
         }
         .sidebar .sidebar-content {
             background: #2563eb;
