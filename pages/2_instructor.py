@@ -65,10 +65,67 @@ def create_announcement(service, course_id, text, materials=None):
         body=announcement
     ).execute()
 
+def add_students(service, course_id):
+    """Streamlit UI to invite students to a course"""
+    st.subheader("Invite Students")
+    
+    with st.expander("➕ Invite Students by Email"):
+        emails = st.text_area(
+            "Enter student emails (one per line or comma-separated)",
+            help="Students must have Google accounts"
+        )
+        
+        if st.button("Send Invitations"):
+            if not emails:
+                st.warning("Please enter email addresses")
+            else:
+                email_list = list(set(
+                    e.strip() for line in emails.split('\n') 
+                    for e in line.split(',') if e.strip()
+                ))
+                
+                results = []
+                for email in email_list:
+                    try:
+                        # Create invitation
+                        invitation = {
+                            'courseId': course_id,
+                            'role': 'STUDENT',
+                            'userId': email
+                        }
+                        # Use the invitations() endpoint instead of students()
+                        service.invitations().create(body=invitation).execute()
+                        results.append((email, "📨 Invitation sent"))
+                    except Exception as e:
+                        if "already exists" in str(e):
+                            results.append((email, "✅ Already enrolled"))
+                        else:
+                            results.append((email, f"❌ Error: {str(e)}"))
+                
+                st.success("Process completed:")
+                for email, status in results:
+                    st.write(f"- {email}: {status}")
+
+    # Display current students
+    st.subheader("Enrolled Students")
+    try:
+        students = service.courses().students().list(courseId=course_id).execute().get('students', [])
+        if students:
+            for student in students:
+                st.write(f"- {student['profile']['emailAddress']} (✅ Enrolled)")
+        else:
+            st.info("No students enrolled yet")
+    except Exception as e:
+        st.error(f"Error loading students: {str(e)}")
+
 def list_students(service, course_id):
-    """List students in a course"""
-    results = service.courses().students().list(courseId=course_id).execute()
-    return results.get("students", [])
+    """Safely list students in a course with error handling"""
+    try:
+        results = service.courses().students().list(courseId=course_id).execute()
+        return results.get("students", [])
+    except Exception as e:
+        st.error(f"Error fetching students: {str(e)}")
+        return []
 
 # ===== UI FUNCTIONS =====
 def load_lottie(url):
@@ -297,7 +354,13 @@ def main():
             with tab2:
                 # Students section
                 st.subheader("Enrolled Students")
+
+           # Add this line to enable student invitations 👇
+                add_students(service, course['id']) 
             
+                # Add this line to enable student invitations 👇
+                add_students(service, course['id']) 
+
                 students = list_students(service, course['id'])
                 if students:
                     for student in students:
@@ -320,6 +383,7 @@ def main():
                                 st.markdown(f"`{student['profile']['emailAddress']}`")
                 else:
                     st.info("No students enrolled yet")
+            
         
             with tab3:
                 # Course details section

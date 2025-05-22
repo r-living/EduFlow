@@ -11,10 +11,23 @@ from streamlit_extras.stylable_container import stylable_container
 # ===== BACKEND CODE =====
 CLIENT_SECRETS_FILE = "credentials.json"
 SCOPES = [
+    # Course management
     'https://www.googleapis.com/auth/classroom.courses',
-    'https://www.googleapis.com/auth/userinfo.email', 
+    'https://www.googleapis.com/auth/classroom.courses.readonly',
+    
+    # Announcements
+    'https://www.googleapis.com/auth/classroom.announcements',
+    'https://www.googleapis.com/auth/classroom.announcements.readonly',
+    
+    # Rosters/Students
+    'https://www.googleapis.com/auth/classroom.rosters',
+    'https://www.googleapis.com/auth/classroom.rosters.readonly',
+    
+    # Profile
+    'https://www.googleapis.com/auth/userinfo.email',
     'openid'
 ]
+
 TOKEN_FILE = "token.json"
 
 def is_authenticated():
