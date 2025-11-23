@@ -52,6 +52,6 @@ cd EduFlow
 pip install -r requirements.txt
 streamlit run streamlit_app.py  
 ```
-##Installation (Application's new version)
+## Installation (Application's new version)
 
 _Soon_
